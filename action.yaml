@@ -19,6 +19,16 @@ inputs:
       [Learn more about creating and using encrypted secrets](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets)
     default: ${{ github.token }}
     required: true
+  branch:
+    required: true
+    default: ${{ github.ref }}
+    description: >
+      The branch you want to check out
+  sha:
+    required: true
+    default: ${{ github.sha }}
+    description: >
+      The sha1 of the head commit of the branch you want to check out
 
 runs:
   using: "composite"
@@ -33,11 +43,11 @@ runs:
       shell: bash
       run: |
         REPO="https://${GITHUB_ACTOR}:${{ inputs.token }}@github.com/${GITHUB_REPOSITORY}.git"
-        BRANCH="${GITHUB_REF/#refs\/heads\//}"
+        BRANCH="${inputs.branch/#refs\/heads\//}"
         git clone --filter=blob:none --no-checkout --depth 1 --sparse $REPO .
         git sparse-checkout init --cone --sparse-index
         git sparse-checkout set ${{ inputs.patterns }}
-        git -c protocol.version=2 fetch --no-tags --prune --progress --depth=1 origin +${GITHUB_SHA}:refs/remotes/origin/${BRANCH}
+        git -c protocol.version=2 fetch --no-tags --prune --progress --depth=1 origin +${inputs.sha}:refs/remotes/origin/${BRANCH}
         git checkout --progress --force -B $BRANCH refs/remotes/origin/$BRANCH
 
     - name: "👨‍💻 show what has been checked out"
