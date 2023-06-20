@@ -48,7 +48,7 @@ runs:
         git clone --filter=blob:none --no-checkout --depth 1 --sparse $REPO .
         git sparse-checkout init --cone --sparse-index
         git sparse-checkout set ${{ inputs.patterns }}
-        git -c protocol.version=2 fetch --no-tags --prune --progress --depth=1 origin +${inputs.sha}:refs/remotes/origin/${BRANCH}
+        git -c protocol.version=2 fetch --no-tags --prune --progress --depth=1 origin +${{inputs.sha}}:refs/remotes/origin/${BRANCH}
         git checkout --progress --force -B $BRANCH refs/remotes/origin/$BRANCH
 
     - name: "👨‍💻 show what has been checked out"
