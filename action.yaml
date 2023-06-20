@@ -43,7 +43,8 @@ runs:
       shell: bash
       run: |
         REPO="https://${GITHUB_ACTOR}:${{ inputs.token }}@github.com/${GITHUB_REPOSITORY}.git"
-        BRANCH="${inputs.branch/#refs\/heads\//}"
+        INPUT_BRANCH=${{inputs.branch}}
+        BRANCH="${INPUT_BRANCH/#refs\/heads\//}"
         git clone --filter=blob:none --no-checkout --depth 1 --sparse $REPO .
         git sparse-checkout init --cone --sparse-index
         git sparse-checkout set ${{ inputs.patterns }}
